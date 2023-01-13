@@ -5,7 +5,7 @@ int s21_sprintf(char *buf, const char *format, ...) {
     // Specs: %c d i f s u
     // Flags: - + space
     // Width: (number)
-    // Precision: .(number)
+    // prec: .(number)
     // Length: h, l.
 
     va_list p_args;
@@ -37,142 +37,192 @@ void copy_to_buf(char *buf, const char *string, va_list p_args) {
 
 void format_processing(const char *format, int *i, char *buf, va_list p_args) {
 
-    format_t format_data;
+    format_t params;
 
-    format_data.minus = 0;
-    format_data.plus = 0;
-    format_data.space = 0;
-    format_data.l = 0;
-    format_data.h = 0;
-    format_data.width = 0;
-    format_data.isprecision = 0;
-    format_data.precision = 0;
-    format_data.spec = '\0';
+    params.minus = 0;
+    params.plus = 0;
+    params.space = 0;
+    params.zero = 0;
+    params.length = ' ';
+    params.width = 0;
+    params.isprec = 0;
+    params.prec = 0;
+    params.spec = '\0';
 
     for(; i[0] < (int)strlen(format) && strchr("cdifsugGeExXonp", format[i[0]]) == NULL; i[0]++) { //replace_with_s21
         
         switch(format[i[0]]) {
+            case '0':
+                if(!params.isprec && !params.zero) {
+                    params.zero = 1;
+                }
+                break;
             case '+':
-                format_data.plus = 1;
+                params.plus = 1;
                 break;
             case '-':
-                format_data.minus = 1;
+                params.minus = 1;
                 break;
             case ' ':
-                format_data.space = 1;
+                params.space = 1;
                 break;
             case 'l':
-                format_data.l = 1;
+                params.length = 'l';
                 break;
             case 'h':
-                format_data.h = 1;
+                params.length = 'h';
+                break;
+            case 'L':
+                params.length = 'L';
                 break;
             case '.':
-                format_data.isprecision = 1;
+                params.isprec = 1;
                 break;
         }
 
-        if(format_data.isprecision && (format[i[0]] > 47 && format[i[0]] < 58)) {
+        if(params.isprec && (format[i[0]] > 47 && format[i[0]] < 58)) {
 
-            format_data.precision = format_data.width * 10 + format[i[0]] - 48;
+            params.prec = params.width * 10 + format[i[0]] - 48;
 
         } else if(format[i[0]] > 47 && format[i[0]] < 58) {
 
-            format_data.width = format_data.width * 10 + format[i[0]] - 48;
+            params.width = params.width * 10 + format[i[0]] - 48;
 
         }
     }
     
-    format_data.spec = format[i[0]];
+    params.spec = format[i[0]];
 
-    format_and_buff(i, buf, p_args, format_data);
+    format_and_buff(i, buf, p_args, params);
 
 }
 
-void format_and_buff(int *i, char *buf, va_list p_args, format_t format_data) {
+void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
 
-    // %[flags][width][.precision][length]specifier
+    // %[flags][width][.prec][length]specifier
 
-    switch(format_data.spec) {
+    switch(params.spec) {
         case 'c':
-            c_to_buf(va_arg(p_args, int), format_data, buf, i);
+            c_to_buf(va_arg(p_args, int), params, buf, i);
             break;
         case 'd':
-            va_arg(p_args, int);
+            if(params.length == 'l') d_to_buf(va_arg(p_args, long int), params, buf, i);
+            else d_to_buf(va_arg(p_args, int), params, buf, i);
             break;
         case 'i':
-            format_data.space = 1;
+            d_to_buf(va_arg(p_args, int), params, buf, i);
             break;
         case 'f':
-            format_data.l = 1;
             break;
         case 's':
-            format_data.h = 1;
             break;
         case 'u':
-            format_data.isprecision = 1;
             break;
         case 'g':
-            format_data.plus = 1;
             break;
         case 'G':
-            format_data.minus = 1;
             break;
         case 'e':
-            format_data.space = 1;
             break;
         case 'E':
-            format_data.l = 1;
             break;
         case 'x':
-            format_data.h = 1;
             break;
         case 'X':
-            format_data.isprecision = 1;
             break;
         case 'n':
-            format_data.l = 1;
             break;
         case 'o':
-            format_data.h = 1;
             break;
         case 'p':
-            format_data.isprecision = 1;
             break;
     }
 
 }
 
-void c_to_buf(const char c, format_t format_data, char *buf, int *i) {
+void c_to_buf(const char c, format_t params, char *buf, int *i) {
 
-    // typedef struct format_struct {
-    //     int minus;
-    //     int plus;
-    //     int space;
-    //     int l;
-    //     int h;
-    //     int width;
-    //     int precision;
-    //     int isprecision;
-    //     char spec;
-    // } format_t;
-
-    if(format_data.width && !format_data.minus) {
-        for(int j = 0; j < format_data.width - 1; j++) {
+    if(params.width && !params.minus) {
+        for(int j = 0; j < params.width - 1; j++) {
             buf[i[1]] = ' ';
             i[1]++;
         }
         buf[i[1]] = c;
-    } else if(format_data.width && format_data.minus) {
+    } else if(params.width && params.minus) {
         buf[i[1]] = c;
         i[1]++;
-        for(int j = 0; j < format_data.width - 1; j++) {
+        for(int j = 0; j < params.width - 1; j++) {
             buf[i[1]] = ' ';
             i[1]++;
         }
         i[1]--;
     } else {
         buf[i[1]] = c;
+    }
+
+}
+
+void d_to_buf(int64_t d, format_t params, char *buf, int *i) {
+
+    int m = 0;
+
+    if(d < 0 && d != 0) {
+        d = -d;
+        m = 1;
+    }
+
+    char temp[BUFF_SIZE] = {'\0'};
+    int j = 0;
+
+    if (d == 0) {
+        temp[0] = '0';
+        j++;
+    }
+    else {
+        while(d != 0) {
+            temp[j] = d%10 + 48;
+            j++;
+            d /= 10;
+        }
+    }
+
+    if(params.space && !m) temp[j] = ' ';
+    if(m) temp[j] = '-';
+
+    format_flag(temp, params, buf, i);
+
+}
+
+void format_flag(char *temp, format_t params, char *buf, int *i) {
+
+    if(params.width && params.minus) {
+
+        for(int j = 0; j < (int)strlen(temp); j++) { //replace_with_s21
+            if(params.prec && params.prec == j + 1) break;
+            buf[i[1]++] = temp[strlen(temp) - 1 - j]; //replace_with_s21
+        }
+
+        for(int j = 0; j < params.width - (int)strlen(temp); j++) { //replace_with_s21
+            buf[i[1]++] = ' ';
+        }
+        
+        i[1]--;
+
+    } else if (params.width && !params.minus) {
+        
+        for(int j = 0; j < params.width - (int)strlen(temp); j++) { //replace_with_s21
+            buf[i[1]++] = ' ';
+        }
+        for(int j = 0; j < (int)strlen(temp); j++) { //replace_with_s21
+            if(params.prec && params.prec == j + 1) break;
+            buf[i[1]++] = temp[strlen(temp) - 1 - j]; //replace_with_s21
+        }
+        i[1]--;
+    } else {
+        for(int j = 0; j < (int)strlen(temp); j++) { //replace_with_s21
+            buf[i[1]++] = temp[strlen(temp) - 1 - j]; //replace_with_s21
+        }
+        i[1]--;
     }
 
 }
