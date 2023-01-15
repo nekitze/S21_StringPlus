@@ -114,7 +114,7 @@ void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
         case 'f':
             if(params.length == 'l') f_to_buf(va_arg(p_args, double), params, buf, i);
             if(params.length == 'L') f_to_buf(va_arg(p_args, long double), params, buf, i);
-            else f_to_buf(va_arg(p_args, float), params, buf, i);
+            else f_to_buf(va_arg(p_args, double), params, buf, i);
             break;
         case 's':
             break;
@@ -239,7 +239,57 @@ void format_flag(char *temp, format_t params, char *buf, int *i) {
 }
 
 void f_to_buf(long double f, format_t params, char *buf, int *i) {
-
     
+    int m = 0;
 
+    if(f < 0. && f != 0.) {
+        f = -f;
+        m = 1;
+    }
+
+    int count = 0;
+    long double man = 0;
+    long int ipart = (int)round(f*10)/10;
+    long int del = pow(10, params.prec);
+    double ipartb = 0;
+
+    if(params.prec) man = round(modf(f, &ipartb)*del)/del;
+    else if(params.spec == 'f') {
+        man = modf(f, &ipartb) + 0.0000005;
+    }
+
+    char temp[BUFF_SIZE] = {'\0'};
+    int j = 0;
+
+    temp[j++] = '.';
+
+    if (ipart == 0) {
+        temp[j++] = '0';
+    }
+
+    while(ipart != 0) {
+        temp[j] = ipart%10 + 48;
+        j++;
+        ipart /= 10;
+    }
+
+    if(params.space && !m) temp[j] = ' ';
+    if(params.plus && !m) temp[j] = '+';
+    if(m) temp[j] = '-';
+
+    if(params.spec == 'f' && !params.prec && params.length != 'l') count = 6;
+    if(params.spec == 'f' && !params.prec && params.length == 'l') count = 14;
+    if(params.prec) count = params.prec;
+
+    format_flag(temp, params, buf, i);
+    
+    i[1]++;
+
+    for(int k = 0; k < count; k++) {
+        man *= 10;
+        buf[i[1]++] = (int)man + 48;
+        man = modf(man, &ipartb);
+    }
+    i[1]--;
+    
 }

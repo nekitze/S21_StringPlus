@@ -544,6 +544,106 @@ START_TEST(test_default47) {
 }
 END_TEST
 
+START_TEST(test_default48) {
+    char result[40];
+    char assert[40];
+    float f = -14.537;
+    s21_sprintf(result, "Count: %f end", f);
+    sprintf(assert, "Count: %f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default49) {
+    char result[40];
+    char assert[40];
+    float f = 14.537;
+    s21_sprintf(result, "Count: %2.2f end", f);
+    sprintf(assert, "Count: %2.2f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default50) {
+    char result[40];
+    char assert[40];
+    float f = 1.0010021;
+    s21_sprintf(result, "Count: %f end", f);
+    sprintf(assert, "Count: %f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default51) {
+    char result[40];
+    char assert[40];
+    float f = 0;
+    s21_sprintf(result, "Count: %f end", f);
+    sprintf(assert, "Count: %f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default52) {
+    char result[40];
+    char assert[40];
+    float f = 0.;
+    s21_sprintf(result, "Count: %f end", f);
+    sprintf(assert, "Count: %f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default53) {
+    char result[40];
+    char assert[40];
+    float f = -123.321;
+    s21_sprintf(result, "Count: %f end", f);
+    sprintf(assert, "Count: %f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default54) {
+    char result[40];
+    char assert[40];
+    float f = 1;
+    s21_sprintf(result, "Count: %f end", f);
+    sprintf(assert, "Count: %f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default55) {
+    char result[40];
+    char assert[40];
+    float f = -.0000001;
+    s21_sprintf(result, "Count: %f end", f);
+    sprintf(assert, "Count: %f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default56) {
+    char result[40];
+    char assert[40];
+    float f = -.0000001;
+    s21_sprintf(result, "Count: %10f end", f);
+    sprintf(assert, "Count: %10f end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default57) {
+    char result[40];
+    char assert[40];
+    float f = -.0000001;
+    s21_sprintf(result, "Count: %03.5lf end", f);
+    sprintf(assert, "Count: %03.5lf end", f);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
 Suite * s21_sprintf_suite(void) {
     Suite *s;
     TCase *tc_s21_sprintf;
@@ -602,6 +702,16 @@ Suite * s21_sprintf_suite(void) {
     tcase_add_test(tc_s21_sprintf, test_default45);
     tcase_add_test(tc_s21_sprintf, test_default46);
     tcase_add_test(tc_s21_sprintf, test_default47);
+    tcase_add_test(tc_s21_sprintf, test_default48);
+    tcase_add_test(tc_s21_sprintf, test_default49);
+    tcase_add_test(tc_s21_sprintf, test_default50);
+    tcase_add_test(tc_s21_sprintf, test_default51);
+    tcase_add_test(tc_s21_sprintf, test_default52);
+    tcase_add_test(tc_s21_sprintf, test_default53);
+    tcase_add_test(tc_s21_sprintf, test_default54);
+    tcase_add_test(tc_s21_sprintf, test_default55);
+    tcase_add_test(tc_s21_sprintf, test_default56);
+    tcase_add_test(tc_s21_sprintf, test_default57);
     tcase_add_test(tc_s21_sprintf, test_default_multy);
     tcase_add_test(tc_s21_sprintf, test_no_args);
     tcase_add_test(tc_s21_sprintf, test_format_d);

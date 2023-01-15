@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdint.h>
+#include <math.h>
 
 #define BUFF_SIZE 512
 
@@ -18,6 +19,15 @@ typedef struct format_struct {
   int isprec;
   char spec;
 } format_t;
+
+typedef union {
+  float f;
+  struct {
+    unsigned int mantisa : 23;
+    unsigned int exponent : 8;
+    unsigned int sign : 1;
+  } parts;
+} float_cast;
 
 int s21_sprintf(char *buf, const char *format, ...);
 void copy_to_buf(char *buf, const char *string, va_list p_args);
