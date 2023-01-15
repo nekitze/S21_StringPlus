@@ -82,7 +82,7 @@ void format_processing(const char *format, int *i, char *buf, va_list p_args) {
 
         if(params.isprec && (format[i[0]] > 47 && format[i[0]] < 58)) {
 
-            params.prec = params.width * 10 + format[i[0]] - 48;
+            params.prec = params.prec * 10 + format[i[0]] - 48;
 
         } else if(format[i[0]] > 47 && format[i[0]] < 58) {
 
@@ -106,13 +106,15 @@ void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
             c_to_buf(va_arg(p_args, int), params, buf, i);
             break;
         case 'd':
+        case 'i':
             if(params.length == 'l') d_to_buf(va_arg(p_args, long int), params, buf, i);
+            else if(params.length == 'h') d_to_buf((short) va_arg(p_args, int), params, buf, i);
             else d_to_buf(va_arg(p_args, int), params, buf, i);
             break;
-        case 'i':
-            d_to_buf(va_arg(p_args, int), params, buf, i);
-            break;
         case 'f':
+            if(params.length == 'l') f_to_buf(va_arg(p_args, double), params, buf, i);
+            if(params.length == 'L') f_to_buf(va_arg(p_args, long double), params, buf, i);
+            else f_to_buf(va_arg(p_args, float), params, buf, i);
             break;
         case 's':
             break;
@@ -186,7 +188,15 @@ void d_to_buf(int64_t d, format_t params, char *buf, int *i) {
         }
     }
 
+    int len = (int)strlen(temp); //replace_with_s21
+
+    while(len < params.prec) {
+        temp[j++] = '0';
+        params.prec--;
+    }
+
     if(params.space && !m) temp[j] = ' ';
+    if(params.plus && !m) temp[j] = '+';
     if(m) temp[j] = '-';
 
     format_flag(temp, params, buf, i);
@@ -195,34 +205,41 @@ void d_to_buf(int64_t d, format_t params, char *buf, int *i) {
 
 void format_flag(char *temp, format_t params, char *buf, int *i) {
 
-    if(params.width && params.minus) {
+    int base_w = (int)strlen(temp); //replace_with_s21
 
-        for(int j = 0; j < (int)strlen(temp); j++) { //replace_with_s21
-            if(params.prec && params.prec == j + 1) break;
-            buf[i[1]++] = temp[strlen(temp) - 1 - j]; //replace_with_s21
-        }
+    if(params.width && !params.minus) {
 
-        for(int j = 0; j < params.width - (int)strlen(temp); j++) { //replace_with_s21
+        for(int j = 0; j < params.width - base_w; j++) {
             buf[i[1]++] = ' ';
         }
-        
+
+        for(int j = 0; j < base_w; j++) {
+            buf[i[1]++] = temp[base_w - 1 - j];
+        }
+
         i[1]--;
+    } else if(params.width && params.minus) {
 
-    } else if (params.width && !params.minus) {
-        
-        for(int j = 0; j < params.width - (int)strlen(temp); j++) { //replace_with_s21
+        for(int j = 0; j < base_w; j++) {
+            buf[i[1]++] = temp[base_w - 1 - j];
+        }
+
+        for(int j = 0; j < params.width - base_w; j++) {
             buf[i[1]++] = ' ';
         }
-        for(int j = 0; j < (int)strlen(temp); j++) { //replace_with_s21
-            if(params.prec && params.prec == j + 1) break;
-            buf[i[1]++] = temp[strlen(temp) - 1 - j]; //replace_with_s21
-        }
+
         i[1]--;
     } else {
-        for(int j = 0; j < (int)strlen(temp); j++) { //replace_with_s21
-            buf[i[1]++] = temp[strlen(temp) - 1 - j]; //replace_with_s21
+        for(int j = 0; j < base_w; j++) {
+            buf[i[1]++] = temp[base_w - 1 - j];
         }
         i[1]--;
     }
+
+}
+
+void f_to_buf(long double f, format_t params, char *buf, int *i) {
+
+    
 
 }

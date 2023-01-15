@@ -326,6 +326,224 @@ START_TEST(test_default25) {
 }
 END_TEST
 
+START_TEST(test_default26) {
+    char result[20];
+    char assert[20];
+    int i = 57;
+    s21_sprintf(result, "Count: %i 1", i);
+    sprintf(assert, "Count: %i 1", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default27) {
+    char result[20];
+    char assert[20];
+    int i = 57;
+    s21_sprintf(result, "Count: %i abc", i);
+    sprintf(assert, "Count: %i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default28) {
+    char result[20];
+    char assert[20];
+    int i = 190;
+    s21_sprintf(result, "Count: %5i", i);
+    sprintf(assert, "Count: %5i", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default29) {
+    char result[20];
+    char assert[20];
+    s21_sprintf(result, "Count: %i%i%i%i", -4, 8, 15, 16);
+    sprintf(assert, "Count: %i%i%i%i", -4, 8, 15, 16);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default30) {
+    char result[20];
+    char assert[20];
+    s21_sprintf(result, "Count: %1.1i", 69);
+    sprintf(assert, "Count: %1.1i", 69);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default31) {
+    char result[20];
+    char assert[20];
+    int i = 571212;
+    s21_sprintf(result, "Count: %.5i abc", i);
+    sprintf(assert, "Count: %.5i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default32) {
+    char result[20];
+    char assert[20];
+    int i = 5312112;
+    s21_sprintf(result, "Count: %-.5i abc", i);
+    sprintf(assert, "Count: %-.5i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default33) {
+    char result[20];
+    char assert[20];
+    int i = 0;
+    s21_sprintf(result, "Count: %i abc", i);
+    sprintf(assert, "Count: %i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default34) {
+    char result[20];
+    char assert[20];
+    int i = 0;
+    s21_sprintf(result, "Count: %i abc", i);
+    sprintf(assert, "Count: %i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default35) {
+    char result[20];
+    char assert[20];
+    int i = 1;
+    s21_sprintf(result, "Count: % i abc", i);
+    sprintf(assert, "Count: % i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default36) {
+    char result[20];
+    char assert[20];
+    int i = -1;
+    s21_sprintf(result, "Count: % i abc", i);
+    sprintf(assert, "Count: % i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default37) {
+    char result[20];
+    char assert[20];
+    int i = -0;
+    s21_sprintf(result, "Count: % i abc", i);
+    sprintf(assert, "Count: % i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default38) {
+    char result[40];
+    char assert[40];
+    int i = 2147483647;
+    s21_sprintf(result, "Count: % i abc", i);
+    sprintf(assert, "Count: % i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default39) {
+    char result[40];
+    char assert[40];
+    int i = -2147483648;
+    s21_sprintf(result, "Count: % i abc", i);
+    sprintf(assert, "Count: % i abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default40) {
+    char result[40];
+    char assert[40];
+    long int i = 214748364912;
+    s21_sprintf(result, "Count: % li abc", i);
+    sprintf(assert, "Count: % li abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default41) {
+    char result[40];
+    char assert[40];
+    long int i = -9223372036854775807;
+    s21_sprintf(result, "Count: % li abc", i);
+    sprintf(assert, "Count: % li abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default42) {
+    char result[40];
+    char assert[40];
+    long int i = 9223372036854775807;
+    s21_sprintf(result, "Count: %li abc", i);
+    sprintf(assert, "Count: %li abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default43) {
+    char result[40];
+    char assert[40];
+    short int i = 32767;
+    s21_sprintf(result, "Count: %hi abc", i);
+    sprintf(assert, "Count: %hi abc", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default44) {
+    char result[40];
+    char assert[40];
+    short int i = 32770;
+    s21_sprintf(result, "Count: %hi end", i);
+    sprintf(assert, "Count: %hi end", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default45) {
+    char result[40];
+    char assert[40];
+    int i = 327710;
+    s21_sprintf(result, "Count: %5.10i end", i);
+    sprintf(assert, "Count: %5.10i end", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default46) {
+    char result[40];
+    char assert[40];
+    int i = 327710;
+    s21_sprintf(result, "Count: %-+10.5i end", i);
+    sprintf(assert, "Count: %-+10.5i end", i);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default47) {
+    char result[40];
+    char assert[40];
+    int i = 327710;
+    s21_sprintf(result, "Count: %+10.5i end", i+1);
+    sprintf(assert, "Count: %+10.5i end", i+1);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
 Suite * s21_sprintf_suite(void) {
     Suite *s;
     TCase *tc_s21_sprintf;
@@ -362,6 +580,28 @@ Suite * s21_sprintf_suite(void) {
     tcase_add_test(tc_s21_sprintf, test_default23);
     tcase_add_test(tc_s21_sprintf, test_default24);
     tcase_add_test(tc_s21_sprintf, test_default25);
+    tcase_add_test(tc_s21_sprintf, test_default26);
+    tcase_add_test(tc_s21_sprintf, test_default27);
+    tcase_add_test(tc_s21_sprintf, test_default28);
+    tcase_add_test(tc_s21_sprintf, test_default29);
+    tcase_add_test(tc_s21_sprintf, test_default30);
+    tcase_add_test(tc_s21_sprintf, test_default31);
+    tcase_add_test(tc_s21_sprintf, test_default32);
+    tcase_add_test(tc_s21_sprintf, test_default33);
+    tcase_add_test(tc_s21_sprintf, test_default34);
+    tcase_add_test(tc_s21_sprintf, test_default35);
+    tcase_add_test(tc_s21_sprintf, test_default36);
+    tcase_add_test(tc_s21_sprintf, test_default37);
+    tcase_add_test(tc_s21_sprintf, test_default38);
+    tcase_add_test(tc_s21_sprintf, test_default39);
+    tcase_add_test(tc_s21_sprintf, test_default40);
+    tcase_add_test(tc_s21_sprintf, test_default41);
+    tcase_add_test(tc_s21_sprintf, test_default42);
+    tcase_add_test(tc_s21_sprintf, test_default43);
+    tcase_add_test(tc_s21_sprintf, test_default44);
+    tcase_add_test(tc_s21_sprintf, test_default45);
+    tcase_add_test(tc_s21_sprintf, test_default46);
+    tcase_add_test(tc_s21_sprintf, test_default47);
     tcase_add_test(tc_s21_sprintf, test_default_multy);
     tcase_add_test(tc_s21_sprintf, test_no_args);
     tcase_add_test(tc_s21_sprintf, test_format_d);
