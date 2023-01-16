@@ -35,7 +35,7 @@ void format_processing(const char *format, int *i, char *buf, va_list p_args);
 void format_and_buff(int *i, char *buf, va_list p_args, format_t format_data);
 void c_to_buf(const char c, format_t format_data, char *buf, int *i);
 void d_to_buf(int64_t d, format_t format_data, char *buf, int *i);
-void format_flag(char *temp, format_t format_data, char *buf, int *i);
+void format_flag(char *temp, format_t format_data, char *buf, int *i, int mode);
 void f_to_buf(long double f, format_t params, char *buf, int *i);
 
 #endif  // SRC_S21_STRING_H
