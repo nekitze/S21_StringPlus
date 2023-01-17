@@ -1,7 +1,6 @@
 #include "s21_string.h"
 
 int s21_sprintf(char *buf, const char *format, ...) {
-
     va_list p_args;
     va_start(p_args, format);
 
@@ -99,7 +98,9 @@ void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
 
     switch(params.spec) {
         case 'c':
-            c_to_buf(va_arg(p_args, int), params, buf, i);
+            if(params.length == 'l') lc_to_buf(va_arg(p_args, wchar_t), params, buf, i);
+            else if(params.length == 'h') lc_to_buf(va_arg(p_args, wint_t), params, buf, i);
+            else c_to_buf(va_arg(p_args, int), params, buf, i);
             break;
         case 'd':
         case 'i':
@@ -113,8 +114,10 @@ void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
             else f_to_buf(va_arg(p_args, double), params, buf, i);
             break;
         case 's':
+            s_to_buf(p_args, params, buf, i);
             break;
         case 'u':
+            u_to_buf(va_arg(p_args, uint64_t), params, buf, i);
             break;
         case 'g':
             break;
@@ -286,4 +289,113 @@ void f_to_buf(long double f, format_t params, char *buf, int *i) {
 
     i[1]--;
     
+}
+
+void s_to_buf(va_list p_args, format_t params, char *buf, int *i) {
+    int j = 0;
+    char temp[BUFF_SIZE] = {'\0'};
+
+    if(params.length == 'l') {
+        const wchar_t *wstr = va_arg(p_args, wchar_t *);
+        j = wcstombs(temp, wstr, BUFF_SIZE);
+
+        if(params.width && !params.minus) {
+            for(int k = 0; k < params.width - j; k++) {
+                buf[i[1]++] = ' ';
+            }
+        }
+        j = 0;
+        while(temp[j] != '\0' && (!params.isprec || j < params.prec)) {
+            buf[i[1]++] = temp[j++];
+        }
+        if(params.width && params.minus) {
+            for(int k = 0; k < params.width - j; k++) {
+                buf[i[1]++] = ' ';
+            }
+        }
+        i[1]--;
+    } else {
+        char *str = va_arg(p_args, char *);
+        j = strlen(str);
+        if(params.width && !params.minus) {
+            for(int k = 0; k < params.width - j; k++) {
+                buf[i[1]++] = ' ';
+            }
+        }
+        j = 0;
+        while(*str != '\0' && (!params.isprec || j < params.prec)) {
+            buf[i[1]++] = *str;
+            str++;
+            j++;
+        }
+
+        if(params.width && params.minus) {
+            for(int k = 0; k < params.width - j; k++) {
+                buf[i[1]++] = ' ';
+            }
+        }
+        i[1]--;
+    }
+    
+}
+
+void lc_to_buf(wchar_t c1, format_t params, char *buf, int *i) {
+
+    char c = 0;
+    mbstate_t mbstate;
+    wcrtomb(&c, c1, &mbstate);
+    if(c != '\0'){
+        if(params.width && !params.minus) {
+            for(int j = 0; j < params.width - 1; j++) {
+                buf[i[1]] = ' ';
+                i[1]++;
+            }
+            buf[i[1]] = c;
+        } else if(params.width && params.minus) {
+            buf[i[1]] = c;
+            i[1]++;
+            for(int j = 0; j < params.width - 1; j++) {
+                buf[i[1]] = ' ';
+                i[1]++;
+            }
+            i[1]--;
+        } else {
+            buf[i[1]] = c;
+        }
+    }
+}
+
+void u_to_buf(uint64_t d, format_t params, char *buf, int *i) {
+
+    if(params.length == 'l') d = (uint64_t)d;
+    else if(params.length == 'h') d = (uint16_t)d;
+    else if(params.length == ' ') d = (uint32_t)d;
+
+    char temp[BUFF_SIZE] = {'\0'};
+    int j = 0;
+
+    if (d == 0) {
+        temp[0] = '0';
+        j++;
+    }
+    else {
+        while(d != 0) {
+            temp[j] = d%10 + 48;
+            j++;
+            d /= 10;
+        }
+    }
+
+    int len = (int)strlen(temp); //replace_with_s21
+
+    while(len < params.prec) {
+        temp[j++] = '0';
+        params.prec--;
+    }
+
+    if(params.space) temp[j] = ' ';
+    if(params.plus) temp[j] = '+';
+
+    format_flag(temp, params, buf, i, 0);
+
 }

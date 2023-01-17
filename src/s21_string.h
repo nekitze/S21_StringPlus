@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
+#include <wchar.h>
+#include <stdlib.h>
 
 #define BUFF_SIZE 512
 
@@ -37,5 +39,8 @@ void c_to_buf(const char c, format_t format_data, char *buf, int *i);
 void d_to_buf(int64_t d, format_t format_data, char *buf, int *i);
 void format_flag(char *temp, format_t format_data, char *buf, int *i, int mode);
 void f_to_buf(long double f, format_t params, char *buf, int *i);
+void s_to_buf(va_list p_args, format_t params, char *buf, int *i);
+void lc_to_buf(wchar_t c1, format_t params, char *buf, int *i);
+void u_to_buf(uint64_t d, format_t params, char *buf, int *i);
 
 #endif  // SRC_S21_STRING_H

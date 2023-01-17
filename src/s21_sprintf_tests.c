@@ -28,9 +28,10 @@ START_TEST(test_default3) {
     char result[20];
     char assert[20];
     char c = 'b';
-    s21_sprintf(result, "Count: %5c", c);
-    sprintf(assert, "Count: %5c", c);
+    int a = s21_sprintf(result, "Count: %5c", c);
+    int b = sprintf(assert, "Count: %5c", c);
     ck_assert_str_eq(result, assert);
+    ck_assert_int_eq(a, b);
 }
 END_TEST
 
@@ -38,9 +39,10 @@ START_TEST(test_default4) {
     char result[20];
     char assert[20];
     char c = 'b';
-    s21_sprintf(result, "Count: %-5c", c);
-    sprintf(assert, "Count: %-5c", c);
+    int a = s21_sprintf(result, "Count: %-5c", c);
+    int b = sprintf(assert, "Count: %-5c", c);
     ck_assert_str_eq(result, assert);
+    ck_assert_int_eq(a, b);
 }
 END_TEST
 
@@ -649,10 +651,11 @@ START_TEST(float_precision) {
     char str2[BUFF_SIZE];
     char *format = "%Lf";
     long double val = 513515.131513515151351;
-    s21_sprintf(str1, format, val);
-    sprintf(str2, format, val);
+    int a = s21_sprintf(str1, format, val);
+    int b = sprintf(str2, format, val);
 
     ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
 }
 END_TEST
 START_TEST(float_width) {
@@ -786,6 +789,441 @@ START_TEST(test_default58) {
 }
 END_TEST
 
+START_TEST(test_default59) {
+    char result[40];
+    char assert[40];
+    char *s = "none";
+    s21_sprintf(result, "Count: %s abc", s);
+    sprintf(assert, "Count: %s abc", s);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default60) {
+    char result[40];
+    char assert[40];
+    char *s = "none";
+    s21_sprintf(result, "Count: %.3s abc", s);
+    sprintf(assert, "Count: %.3s abc", s);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default61) {
+    char result[40];
+    char assert[40];
+    char *s = "none";
+    s21_sprintf(result, "%.6s", s);
+    sprintf(assert, "%.6s", s);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default62) {
+    char result[40];
+    char assert[40];
+    char *s = "stroka s probelom";
+    s21_sprintf(result, "%5.6s", s);
+    sprintf(assert, "%5.6s", s);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default63) {
+    char result[40];
+    char assert[40];
+    char *s = "stroka s probelom";
+    s21_sprintf(result, "%-5.6s", s);
+    sprintf(assert, "%-5.6s", s);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default64) {
+    char result[40];
+    char assert[40];
+    wchar_t s[] = L"wide chars: ";
+    s21_sprintf(result, "%-5.6ls", s);
+    sprintf(assert, "%-5.6ls", s);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(string) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%s";
+    char *val = "21R DSADA SDHASDOAMDSA sdas8d7nasd 111";
+    ck_assert_int_eq(s21_sprintf(str1, format, val),
+                     sprintf(str2, format, val));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+START_TEST(string_precision) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%.15s";
+    char *val = "21R DSADA SDHASDOAMDSA sdas8d7nasd 111";
+    ck_assert_int_eq(s21_sprintf(str1, format, val),
+                     sprintf(str2, format, val));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+START_TEST(string_width) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%15s";
+    char *val = "21R DSADA SDHASDOAMDSA sdas8d7nasd 111";
+    ck_assert_int_eq(s21_sprintf(str1, format, val),
+                     sprintf(str2, format, val));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+START_TEST(string_flags) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%-15.9s";
+    char *val = "21R DSADA SDHASDOAMDSA sdas8d7nasd 111";
+    s21_sprintf(str1, format, val),
+    sprintf(str2, format, val);
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(string_long) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%s";
+    char *val =
+        "ADibsy8 ndASN) dun8AWn dA 9sDNsa NAID saDYBU DSnaJ Sd";
+    ck_assert_int_eq(s21_sprintf(str1, format, val),
+                     sprintf(str2, format, val));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(string_many) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%s%s%s%s";
+    char *val =
+        "ADibsy8 ndASN) dun8AWn dA 9sDNsa NAID saDYBU DSnaJ Sd";
+    char *s1 = "";
+    char *s2 = "87418347813748913749871389480913";
+    char *s3 = "HAHAABOBASUCKER";
+    ck_assert_int_eq(s21_sprintf(str1, format, val, s1, s2, s3),
+                     sprintf(str2, format, val, s1, s2, s3));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(string_width_huge) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+    char *val = "kjafdiuhfjahfjdahf";
+    char *format = "%120s";
+    ck_assert_int_eq(s21_sprintf(str1, format, val),
+                     sprintf(str2, format, val));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(test_one_string) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    ck_assert_int_eq(s21_sprintf(str1, "%s", "DASdw D sadw ASD"),
+                     sprintf(str2, "%s", "DASdw D sadw ASD"));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(test_many_string) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    ck_assert_int_eq(
+        s21_sprintf(str1, "%s%s%s%s%s", "DASdw", " ", "sadw", " ", "ASD"),
+        sprintf(str2, "%s%s%s%s%s", "DASdw", " ", "sadw", " ", "ASD"));
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(wstr) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %ls";
+    wchar_t w[] = L"à";
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+END_TEST
+
+START_TEST(wstr1) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %5.12ls";
+    wchar_t w[] = L"àààààà";
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+END_TEST
+
+START_TEST(wstr2) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %120ls ABOBA";
+    wchar_t w[] = L"森我爱菠萝";
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+END_TEST
+START_TEST(wstr3) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%-43ls";
+    wchar_t w[] = L"森我爱菠萝";
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+END_TEST
+START_TEST(wstr4) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %43ls";
+    wchar_t w[] = L"森我爱菠萝";
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+END_TEST
+START_TEST(wchr2) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %43lc 123";
+    unsigned long w = L'森';
+    int a = s21_sprintf(str1, format, w);
+    int b =sprintf(str2, format, w);
+    ck_assert_int_eq(a, b);
+    ck_assert_str_eq(str1, str2);
+}
+
+START_TEST(wchr) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %lc";
+    unsigned long w = L'汉';
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+
+START_TEST(width_char) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %5c";
+    char w = 'c';
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+START_TEST(minus_wchr) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %-5lc";
+    unsigned long w = L'森';
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
+}
+END_TEST
+
+START_TEST(test_default65) {
+    char result[20];
+    char assert[20];
+    unsigned int u = 571212;
+    s21_sprintf(result, "Count: %.5u abc", u);
+    sprintf(assert, "Count: %.5u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default66) {
+    char result[20];
+    char assert[20];
+    unsigned int u = 5312112;
+    s21_sprintf(result, "Count: %-.5u abc", u);
+    sprintf(assert, "Count: %-.5u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default67) {
+    char result[20];
+    char assert[20];
+    unsigned int u = 0;
+    s21_sprintf(result, "Count: %u abc", u);
+    sprintf(assert, "Count: %u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default68) {
+    char result[20];
+    char assert[20];
+    unsigned int u = 0;
+    s21_sprintf(result, "Count: %u abc", u);
+    sprintf(assert, "Count: %u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default69) {
+    char result[20];
+    char assert[20];
+    unsigned int u = 1;
+    s21_sprintf(result, "Count: %u abc", u);
+    sprintf(assert, "Count: %u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default70) {
+    char result[20];
+    char assert[20];
+    unsigned int u = -1;
+    s21_sprintf(result, "Count: %u abc", u);
+    sprintf(assert, "Count: %u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default71) {
+    char result[20];
+    char assert[20];
+    unsigned int u = -0;
+    s21_sprintf(result, "Count: %u abc", u);
+    sprintf(assert, "Count: %u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default72) {
+    char result[40];
+    char assert[40];
+    unsigned int u = 2147483647;
+    s21_sprintf(result, "Count: %u abc", u);
+    sprintf(assert, "Count: %u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default73) {
+    char result[40];
+    char assert[40];
+    unsigned int u = -2147483648;
+    s21_sprintf(result, "Count: %u abc", u);
+    sprintf(assert, "Count: %u abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default74) {
+    char result[40];
+    char assert[40];
+    unsigned long int u = 214748364912;
+    s21_sprintf(result, "Count: %lu abc", u);
+    sprintf(assert, "Count: %lu abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default75) {
+    char result[40];
+    char assert[40];
+    unsigned long int u = -9223372036854775807;
+    s21_sprintf(result, "Count: %lu abc", u);
+    sprintf(assert, "Count: %lu abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default76) {
+    char result[40];
+    char assert[40];
+    unsigned long int u = 9223372036854775807;
+    s21_sprintf(result, "Count: %lu abc", u);
+    sprintf(assert, "Count: %lu abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default77) {
+    char result[40];
+    char assert[40];
+    unsigned short int u = 32767;
+    s21_sprintf(result, "Count: %hu abc", u);
+    sprintf(assert, "Count: %hu abc", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default78) {
+    char result[40];
+    char assert[40];
+    unsigned short int u = 32770;
+    s21_sprintf(result, "Count: %hu end", u);
+    sprintf(assert, "Count: %hu end", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default79) {
+    char result[40];
+    char assert[40];
+    unsigned int u = 327710;
+    s21_sprintf(result, "Count: %11.10u end", u);
+    sprintf(assert, "Count: %11.10u end", u);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
 Suite * s21_sprintf_suite(void) {
     Suite *s;
     TCase *tc_s21_sprintf;
@@ -855,6 +1293,45 @@ Suite * s21_sprintf_suite(void) {
     tcase_add_test(tc_s21_sprintf, test_default56);
     tcase_add_test(tc_s21_sprintf, test_default57);
     tcase_add_test(tc_s21_sprintf, test_default58);
+    tcase_add_test(tc_s21_sprintf, test_default59);
+    tcase_add_test(tc_s21_sprintf, test_default60);
+    tcase_add_test(tc_s21_sprintf, test_default61);
+    tcase_add_test(tc_s21_sprintf, test_default62);
+    tcase_add_test(tc_s21_sprintf, test_default63);
+    tcase_add_test(tc_s21_sprintf, test_default64);
+    tcase_add_test(tc_s21_sprintf, test_default65);
+    tcase_add_test(tc_s21_sprintf, test_default66);
+    tcase_add_test(tc_s21_sprintf, test_default67);
+    tcase_add_test(tc_s21_sprintf, test_default68);
+    tcase_add_test(tc_s21_sprintf, test_default69);
+    tcase_add_test(tc_s21_sprintf, test_default70);
+    tcase_add_test(tc_s21_sprintf, test_default71);
+    tcase_add_test(tc_s21_sprintf, test_default72);
+    tcase_add_test(tc_s21_sprintf, test_default73);
+    tcase_add_test(tc_s21_sprintf, test_default74);
+    tcase_add_test(tc_s21_sprintf, test_default75);
+    tcase_add_test(tc_s21_sprintf, test_default76);
+    tcase_add_test(tc_s21_sprintf, test_default77);
+    tcase_add_test(tc_s21_sprintf, test_default78);
+    tcase_add_test(tc_s21_sprintf, test_default79);
+    tcase_add_test(tc_s21_sprintf, string);
+    tcase_add_test(tc_s21_sprintf, string_precision);
+    tcase_add_test(tc_s21_sprintf, string_width);
+    tcase_add_test(tc_s21_sprintf, string_flags);
+    tcase_add_test(tc_s21_sprintf, string_long);
+    tcase_add_test(tc_s21_sprintf, string_many);
+    tcase_add_test(tc_s21_sprintf, string_width_huge);
+    tcase_add_test(tc_s21_sprintf, test_one_string);
+    tcase_add_test(tc_s21_sprintf, test_many_string);
+    tcase_add_test(tc_s21_sprintf, wstr);
+    tcase_add_test(tc_s21_sprintf, wstr1);
+    tcase_add_test(tc_s21_sprintf, wstr2);
+    tcase_add_test(tc_s21_sprintf, wstr3);
+    tcase_add_test(tc_s21_sprintf, wstr4);
+    tcase_add_test(tc_s21_sprintf, wchr2);
+    tcase_add_test(tc_s21_sprintf, wchr);
+    tcase_add_test(tc_s21_sprintf, width_char);
+    tcase_add_test(tc_s21_sprintf, minus_wchr);
     tcase_add_test(tc_s21_sprintf, float_precision);
     tcase_add_test(tc_s21_sprintf, float_width);
     tcase_add_test(tc_s21_sprintf, float_precision_zero);
