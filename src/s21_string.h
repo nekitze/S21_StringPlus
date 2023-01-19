@@ -7,6 +7,7 @@
 #include <math.h>
 #include <wchar.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #define BUFF_SIZE 512
 
@@ -46,7 +47,7 @@ void u_to_buf(uint64_t d, format_t params, char *buf, int *i, int base);
 void gG_to_buf(long double f, format_t params, char *buf, int *i);
 void remove_trailing_zeroes(char *buf, int *i);
 void prepend_mantiss(char *buf, int pow, char sign, int *i);
-void to_upper(char *str);
+void uppcase(char *str);
 void parse_man(format_t params, char *buf, long double val, int *i);
 void o_to_buf(format_t params, char *buf, int64_t val, int *i);
 void xX_to_buf(format_t params, char *buf, int64_t val, int *i);

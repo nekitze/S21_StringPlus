@@ -149,7 +149,7 @@ void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
     }
 
     if (params.spec == 'G' || params.spec == 'E')
-        to_upper(buf);
+        uppcase(buf);
 
 }
 
@@ -212,7 +212,7 @@ void d_to_buf(int64_t d, format_t params, char *buf, int *i, int base) {
     if(params.hash && !(params.spec == 'x' || params.spec == 'X')) temp[j] = '0';
     if(m) temp[j] = '-';
 
-    if (params.spec == 'X') to_upper(temp);
+    if (params.spec == 'X') uppcase(temp);
 
     format_flag(temp, params, buf, i, 0);
 
@@ -499,7 +499,7 @@ void prepend_mantiss(char *buf, int pow, char sign, int *i) {
     i[1] += 3;
 }
 
-void to_upper(char *str) {
+void uppcase(char *str) {
     while (*str) {
         if (*str >= 'a' && *str <= 'z')
             *str = *str - 'a' + 'A';
