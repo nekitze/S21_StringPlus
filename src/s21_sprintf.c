@@ -138,11 +138,13 @@ void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
             xX_to_buf(params, buf, va_arg(p_args, int64_t), i);
             break;
         case 'n':
+            i[1]--;
             break;
         case 'o':
             o_to_buf(params, buf, va_arg(p_args, int64_t), i);
             break;
         case 'p':
+            p_to_buf(params, buf, va_arg(p_args, uint64_t), i);
             break;
     }
 
@@ -220,20 +222,20 @@ void format_flag(char *temp, format_t params, char *buf, int *i, int mode) {
 
     int base_w = (int)strlen(temp); //replace_with_s21
 
-    if (params.hash && (params.spec == 'x' || params.spec == 'X')) {
+    if ((params.hash && (params.spec == 'x' || params.spec == 'X')) || params.spec == 'p') {
         if (!check_zeroes(temp) || params.spec == 'p') {
             // params.prec += 2;
             // params.width -= 1;
             if(params.width) params.width -= 2;
         }
-    } else if(params.width && params.hash && (params.spec == 'x' || params.spec == 'X')) params.width -= 2;
+    } else if(params.width && params.hash && (params.spec == 'x' || params.spec == 'X' || params.spec == 'p')) params.width -= 2;
 
     if(params.width && !params.minus) {
         for(int j = 0; j < params.width - mode - base_w; j++) {
             if(!params.zero) buf[i[1]++] = ' ';
             else buf[i[1]++] = '0';
         }
-        if (params.hash && (params.spec == 'x' || params.spec == 'X')) {
+        if ((params.hash && (params.spec == 'x' || params.spec == 'X')) || params.spec == 'p') {
             if (!check_zeroes(temp) || params.spec == 'p') {
                 buf[i[1]++] = '0';
                 if (params.spec == 'X') buf[i[1]++] = 'X';
@@ -243,7 +245,7 @@ void format_flag(char *temp, format_t params, char *buf, int *i, int mode) {
         for(int j = 0; j < base_w; j++) buf[i[1]++] = temp[base_w - 1 - j];
         i[1]--;
     } else if(params.width && params.minus) {
-        if (params.hash && (params.spec == 'x' || params.spec == 'X')) {
+        if ((params.hash && (params.spec == 'x' || params.spec == 'X')) || params.spec == 'p') {
             if (!check_zeroes(temp) || params.spec == 'p') {
                 buf[i[1]++] = '0';
                 if (params.spec == 'X') buf[i[1]++] = 'X';
@@ -251,13 +253,10 @@ void format_flag(char *temp, format_t params, char *buf, int *i, int mode) {
             }
         }
         for(int j = 0; j < base_w; j++) buf[i[1]++] = temp[base_w - 1 - j];
-        for(int j = 0; j < params.width - mode - base_w; j++) {
-            if(!params.zero) buf[i[1]++] = ' ';
-            else buf[i[1]++] = '0';
-        }
+        for(int j = 0; j < params.width - mode - base_w; j++) buf[i[1]++] = ' ';
         i[1]--;
     } else {
-        if (params.hash && (params.spec == 'x' || params.spec == 'X')) {
+        if ((params.hash && (params.spec == 'x' || params.spec == 'X')) || params.spec == 'p') {
             if (!check_zeroes(temp) || params.spec == 'p') {
                 buf[i[1]++] = '0';
                 if (params.spec == 'X') buf[i[1]++] = 'X';
@@ -559,4 +558,13 @@ int check_zeroes(char *buf) {
         if (buf[i] != '0')
             return 0;
     return 1;
+}
+
+void p_to_buf(format_t params, char *buf, int64_t val, int *i) {
+    if(val) d_to_buf(val, params, buf, i, 16);
+    else {
+        memset(buf, 0, 1);
+        strcat(buf, "(nil)");
+        i[1] += 6;
+    }
 }

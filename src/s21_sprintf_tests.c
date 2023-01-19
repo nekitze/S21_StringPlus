@@ -1813,6 +1813,104 @@ START_TEST(test_default128) {
 }
 END_TEST
 
+START_TEST(test_default129) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%p";
+    s21_sprintf(str1, format, format);
+    sprintf(str2, format, format);
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+START_TEST(test_default130) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%15p";
+    s21_sprintf(str1, format, format);
+    sprintf(str2, format, format);
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+START_TEST(test_default131) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%.5p";
+    s21_sprintf(str1, format, format);
+    sprintf(str2, format, format);
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+START_TEST(test_default132) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "%p";
+    char *ptr = NULL;
+    s21_sprintf(str1, format, ptr);
+    sprintf(str2, format, ptr);
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+START_TEST(test_default133) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+    int ret = 0;
+    char *format = "How many chars written before n %n";
+    s21_sprintf(str1, format, &ret);
+    sprintf(str2, format, &ret);
+
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(test_default134) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+    int n1;
+    int n2;
+    s21_sprintf(str1, "%d%n", 123, &n1);
+    sprintf(str2, "%d%n", 123, &n2);
+    ck_assert_str_eq(str1, str2);
+}
+END_TEST
+
+START_TEST(test_default135) {
+    char result[512];
+    char assert[512];
+    char *d = "2147";
+    s21_sprintf(result, "%101s", d);
+    sprintf(assert, "%101s", d);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default136) {
+    char result[20];
+    char assert[20];
+    char c = 'z';
+    s21_sprintf(result, "Count: %12lc", c);
+    sprintf(assert, "Count: %12lc", c);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default137) {
+    char result[20];
+    char assert[20];
+    char c = 'z';
+    s21_sprintf(result, "Count: %-12lc", c);
+    sprintf(assert, "Count: %-12lc", c);
+    ck_assert_str_eq(result, assert);
+}
+END_TEST
+
 Suite * s21_sprintf_suite(void) {
     Suite *s;
     TCase *tc_s21_sprintf;
@@ -1952,6 +2050,15 @@ Suite * s21_sprintf_suite(void) {
     tcase_add_test(tc_s21_sprintf, test_default126);
     tcase_add_test(tc_s21_sprintf, test_default127);
     tcase_add_test(tc_s21_sprintf, test_default128);
+    tcase_add_test(tc_s21_sprintf, test_default129);
+    tcase_add_test(tc_s21_sprintf, test_default130);
+    tcase_add_test(tc_s21_sprintf, test_default131);
+    tcase_add_test(tc_s21_sprintf, test_default132);
+    tcase_add_test(tc_s21_sprintf, test_default133);
+    tcase_add_test(tc_s21_sprintf, test_default134);
+    tcase_add_test(tc_s21_sprintf, test_default135);
+    tcase_add_test(tc_s21_sprintf, test_default136);
+    tcase_add_test(tc_s21_sprintf, test_default137);
     tcase_add_test(tc_s21_sprintf, string);
     tcase_add_test(tc_s21_sprintf, string_precision);
     tcase_add_test(tc_s21_sprintf, string_width);

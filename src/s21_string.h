@@ -51,5 +51,6 @@ void parse_man(format_t params, char *buf, long double val, int *i);
 void o_to_buf(format_t params, char *buf, int64_t val, int *i);
 void xX_to_buf(format_t params, char *buf, int64_t val, int *i);
 int check_zeroes(char *buf);
+void p_to_buf(format_t params, char *buf, int64_t val, int *i);
 
 #endif  // SRC_S21_STRING_H
