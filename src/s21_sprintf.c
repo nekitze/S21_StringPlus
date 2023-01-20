@@ -102,7 +102,7 @@ void format_and_buff(int *i, char *buf, va_list p_args, format_t params) {
 
     switch(params.spec) {
         case 'c':
-            if(params.length == 'l') lc_to_buf(va_arg(p_args, wchar_t), params, buf, i);
+            if(params.length == 'l') lc_to_buf(va_arg(p_args, wint_t), params, buf, i);
             else if(params.length == 'h') lc_to_buf(va_arg(p_args, wint_t), params, buf, i);
             else c_to_buf(va_arg(p_args, int), params, buf, i);
             break;
@@ -389,9 +389,9 @@ void s_to_buf(va_list p_args, format_t params, char *buf, int *i) {
     
 }
 
-void lc_to_buf(wchar_t c1, format_t params, char *buf, int *i) {
+void lc_to_buf(wint_t c1, format_t params, char *buf, int *i) {
 
-    char c = 0;
+    char c = '\0';
     mbstate_t mbstate;
     wcrtomb(&c, c1, &mbstate);
     if(c != '\0'){
