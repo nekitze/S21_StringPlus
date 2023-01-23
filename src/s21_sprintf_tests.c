@@ -994,7 +994,7 @@ START_TEST(wstr2) {
     char str1[BUFF_SIZE];
     char str2[BUFF_SIZE];
 
-    char *format = "wchar: %120ls ABOBA";
+    char *format = "wchar: %120hs ABOBA";
     wchar_t w[] = L"森我爱菠萝";
     int a = s21_sprintf(str1, format, w);
     int b = sprintf(str2, format, w);
@@ -1051,6 +1051,7 @@ START_TEST(wchr) {
     ck_assert_str_eq(str1, str2);
     ck_assert_int_eq(a, b);
 }
+END_TEST
 
 START_TEST(width_char) {
     char str1[BUFF_SIZE];
@@ -1894,8 +1895,8 @@ START_TEST(test_default135) {
 END_TEST
 
 START_TEST(test_default136) {
-    char result[20];
-    char assert[20];
+    char result[512];
+    char assert[512];
     char c = 'z';
     s21_sprintf(result, "Count: %12lc", c);
     sprintf(assert, "Count: %12lc", c);
@@ -1910,6 +1911,19 @@ START_TEST(test_default137) {
     s21_sprintf(result, "Count: %-12lc", c);
     sprintf(assert, "Count: %-12lc", c);
     ck_assert_str_eq(result, assert);
+}
+END_TEST
+
+START_TEST(test_default138) {
+    char str1[BUFF_SIZE];
+    char str2[BUFF_SIZE];
+
+    char *format = "wchar: %lc";
+    wchar_t w = L'A';
+    int a = s21_sprintf(str1, format, w);
+    int b = sprintf(str2, format, w);
+    ck_assert_str_eq(str1, str2);
+    ck_assert_int_eq(a, b);
 }
 END_TEST
 
@@ -2061,6 +2075,7 @@ Suite * s21_sprintf_suite(void) {
     tcase_add_test(tc_s21_sprintf, test_default135);
     tcase_add_test(tc_s21_sprintf, test_default136);
     tcase_add_test(tc_s21_sprintf, test_default137);
+    tcase_add_test(tc_s21_sprintf, test_default138);
     tcase_add_test(tc_s21_sprintf, string);
     tcase_add_test(tc_s21_sprintf, string_precision);
     tcase_add_test(tc_s21_sprintf, string_width);
