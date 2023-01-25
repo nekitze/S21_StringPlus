@@ -10,10 +10,10 @@ int s21_sscanf(const char *str, const char *format, ...) {
     char *str_carriage = (char *)str;
     char *format_carriage = (char *)format;
     int token_carriage = 0;
-    // int length = (int) s21_strlen(format_carriage);
+    int length = (int) s21_strlen(format_carriage);
     token tokens[BUFF_SIZE];
 
-    while (format_carriage) {
+    for (int i = 0; i < length; i++) {
       tokens[token_carriage] = token_parse(&format_carriage, &ap);
       token_carriage++;
     }
@@ -79,7 +79,7 @@ token token_parse(char **format, va_list *ap) {
 
   if (register_check(**format) && !t.spec) {
     int i = 0;
-    s21_memset(t.buff, '\0', BUFF_SIZE - 1);
+    s21_memset(t.buff, '\0', 1024 - 1);
     while (**format && !space_check(**format) && **format != '%') {
       t.buff[i++] = **format;
       (*format)++;
@@ -244,7 +244,7 @@ void write_float_to_memory(char **str_carriage, int *result, token *t) {
                             t->width_status, start_index);
       if (t->width != WIDTH_AST) {
         // конвертируем строку в double
-        long double result_strtold = s21_strtold(buff);
+        long double result_strtold = s21_strtold(buff, NULL);
         (*result)++;
         float_type_converter(t, result_strtold);
       }

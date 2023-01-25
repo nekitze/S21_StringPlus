@@ -102,3 +102,60 @@ char *s21_itoa(long int num, char *str) {
   }
   return str;
 }
+
+long double s21_strtold(const char *nptr, char **endptr) {
+    long double result = 0.0, base = 10.0;
+    long double power = 0.1, sign = 1.0;
+    // skip leading whitespaces
+    while (*nptr == ' ' || *nptr == '\t') {
+        nptr++;
+    }
+    // check for sign
+    if (*nptr == '-') {
+      sign = -1.0;
+      nptr++;
+    } else if (*nptr == '+') {
+      nptr++;
+    }
+    // process digits before decimal point
+    while (*nptr >= '0' && *nptr <= '9') {
+      result = result * base + (*nptr - '0');
+      nptr++;
+    }
+    // check for decimal point
+    if (*nptr == '.') {
+        nptr++;
+    }
+    // process digits after decimal point
+    while (*nptr >= '0' && *nptr <= '9') {
+      result += (*nptr - '0') * power;
+      power *= 0.1;
+      nptr++;
+    }
+    // check for exponent
+    if (*nptr == 'e' || *nptr == 'E') {
+      nptr++;
+      int exponent = 0;
+      int exp_sign = 1;
+      // check for exponent sign
+      if (*nptr == '-') {
+        exp_sign = -1;
+        nptr++;
+      } else if (*nptr == '+') {
+        nptr++;
+      }
+      // process exponent digits
+      while (*nptr >= '0' && *nptr <= '9') {
+        exponent = exponent * 10 + (*nptr - '0');
+        nptr++;
+      }
+      // adjust result based on exponent
+      while (exponent > 0) {
+        result *= exp_sign > 0 ? 10 : 0.1;
+        exponent--;
+      }
+    }
+    // set endptr if provided
+    if (endptr) *endptr = (char *)nptr;
+    return result * sign;
+}

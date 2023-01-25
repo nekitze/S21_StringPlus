@@ -386,7 +386,7 @@ token token_parse(char **format, va_list *ap);
 int space_check(char c);
 int register_check(char c);
 
-long double s21_strtold(const char *buffer);
+long double s21_strtold(const char *nptr, char **endptr);
 unsigned long long int s21_strntollu(const char *string, char **endptr,
                                      int basis, int n_byte);
 
