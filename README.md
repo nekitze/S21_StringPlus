@@ -84,7 +84,7 @@ The only support for strings in the programming language proper is that the comp
 | 1 | void *memchr(const void *str, int c, size_t n) | Searches for the first occurrence of the character c (an unsigned char) in the first n bytes of the string pointed to, by the argument str. |
 | 2 | int memcmp(const void *str1, const void *str2, size_t n) | Compares the first n bytes of str1 and str2. |
 | 3 | void *memcpy(void *dest, const void *src, size_t n) | Copies n characters from src to dest. |
-| 4 | void *memmove(void *dest, const void *src, size_t n) | Another function to copy n characters from str2 to str1. |
+| 4 | void *memmove(void *dest, const void *src, size_t n) | Another function to copy n characters from src to dest. |
 | 5 | void *memset(void *str, int c, size_t n) | Copies the character c (an unsigned char) to the first n characters of the string pointed to, by the argument str. |
 | 6 | char *strcat(char *dest, const char *src) | Appends the string pointed to, by src to the end of the string pointed to by dest. |
 | 7 | char *strncat(char *dest, const char *src, size_t n) | Appends the string pointed to, by src to the end of the string pointed to, by dest up to n characters long. |
@@ -180,8 +180,9 @@ where:
 
 It is necessary to implement the described [above](#stringh-functions) functions of the string.h library: 
  - The library must be developed in C language of C11 standard using gcc compiler
- - The library's code, makefile and library itself must be located in the src folder on the develop branch    
+ - The library's code, including headers, makefile and library itself must be located in the src folder on the develop branch    
  - Do not use outdated and legacy language constructions and library functions. Pay attention to the legacy and obsolete marks in the official documentation on the language and the libraries used. Use the POSIX.1-2017 standard. 
+ - When writing code it is necessary to follow the Google style
  - Make it as a static library (with the header file s21_string.h)
  - The library must be developed in accordance with the principles of structured programming, duplication in the code must be avoided
  - Prepare a full coverage of the library's functions by unit-tests using the Check library
@@ -234,3 +235,6 @@ Bonus assignment for extra points. You must implement some string processing fun
 - The functions must be placed in the s21_string.h library.
 - All of the requirements outlined in [the first part](#part-1-implementation-of-the-stringh-library-functions) are applied to functions implementation, 
   excluding the requirement to compare your implementation with the standard.
+
+
+💡 [Tap here](https://forms.yandex.ru/u/6357d8f4d046882e611f10cd/) **to leave your feedback on the project**. Pedago Team really tries to make your educational experience better.

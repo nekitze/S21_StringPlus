@@ -1,27 +1,55 @@
-CC=gcc
-CFLAGS=-Wall -Werror -Wextra -std=c11 -fprofile-arcs -ftest-coverage
-LDFLAGS="-lgcov"
-TFLAGS=`pkg-config --cflags --libs check`
-SANITIZER=#-fsanitize=address
+CC+FLAGS = gcc -std=c11 -Wall -Wextra -Werror -g
+TEST_+FLAGS = gcc -std=c11 -Wall -Wextra -g
+GCOVFLAGS = -L. -ls21_string --coverage
+OS = $(shell uname)
+ifeq ($(OS), Linux)
+	CHECK_FLAGS = -lcheck -pthread -lrt -lm -lsubunit
+else
+	CHECK_FLAGS = -lcheck
+endif
 
-test: fclean
-	$(CC) -c $(CFLAGS) $(SANITIZER) $(LDFLAGS) s21_sprintf.c s21_sprintf_tests.c s21_string.h
-	$(CC) $(CFLAGS) $(LDFLAGS) *.o -o s21_sprintf_tests $(TFLAGS)
+TEST_COMPILE = $(TEST+FLAGS)  tests/all*.c libs21_string.a $(CHECK_FLAGS) -L. -ls21_string
 
-coverage-test: test
-	./s21_sprintf_tests
-	lcov -c -d . -o index.info
-	genhtml index.info --output-directory html --ignore-errors source
-coverage:
-	make --ignore-errors coverage-test
+all: clean s21_string.a test
+
 clean:
+	rm -rf *.o *.g* *.info *.out report *.a *.dSYM debug
+
+rebuild: clean all
+
+test: s21_string.a
+	$(TEST_COMPILE)
+	./a.out
+
+debug: clean s21_string.a
+	gcc -std=c11 -Wall -Wextra -g debug.c libs21_string.a
+	./a.out
+
+gcov_report: s21_string.a test
+	rm -f *.g*
+	$(CC+FLAGS) s21_m*.c s21_st*.c s21_sp*.c tests/all*.c libs21_string.a $(CHECK_FLAGS) $(GCOVFLAGS)
+	./a.out
+	lcov -t a.out -o rep.info -c -d .
+	genhtml -o report rep.info
+	open ./report/index.html
+	rm -rf *.gcda *.gcno s21_tests s21_tests.info
+
+s21_string.a: s21_string.o
+	ar rcs libs21_string.a *.o
 	rm -rf *.o
-	rm -rf *.gch
-	rm -rf *.gcno
-	rm -rf *.gcda
-fclean:
-	rm -rf s21_sprintf
-	rm -rf s21_sprintf_tests
+	ranlib libs21_string.a
+	cp libs21_string.a s21_string.a
+	cp libs21_string.a ls21_string.a
+
+s21_string.o:
+	$(CC+FLAGS) -c s21*.c
+
+check:
+	clang-format -style=google -i *.c *.h
+	make test
+ifeq ($(OS), Darwin)
+	CK_FORK=no leaks --atExit -- ./a.out
+else
+	valgrind ./a.out --leak-check=full
+endif
 	make clean
-	rm -rf html
-	rm -rf *.info
