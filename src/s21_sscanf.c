@@ -10,7 +10,7 @@ int s21_sscanf(const char *str, const char *format, ...) {
     char *str_carriage = (char *)str;
     char *format_carriage = (char *)format;
     int token_carriage = 0;
-    int length = (int) s21_strlen(format_carriage);
+    int length = (int)s21_strlen(format_carriage);
     token tokens[BUFF_SIZE];
 
     for (int i = 0; i < length; i++) {

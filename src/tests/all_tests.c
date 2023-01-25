@@ -2957,6 +2957,124 @@ START_TEST(s21_sscanf_test_19_u_option) {
 }
 END_TEST
 
+START_TEST(test_sscanf_spec_i_int1) {
+    long long a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+    const char str[] = "100 500 -600 +700";
+    const char fstr[] = "%lli %lli %lli %lli";
+
+    int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+    int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+    ck_assert_int_eq(res1, res2);
+    ck_assert_int_eq(a1, a2);
+    ck_assert_int_eq(b1, b2);
+    ck_assert_int_eq(c1, c2);
+    ck_assert_int_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(test_sscanf_spec_i_int2) {
+    long long a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+    const char str[] = "100500-600+700 123";
+    const char fstr[] = "%lli %lld %lld %lli";
+
+    int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+    int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+    ck_assert_int_eq(res1, res2);
+    ck_assert_int_eq(a1, a2);
+    ck_assert_int_eq(b1, b2);
+    ck_assert_int_eq(c1, c2);
+    ck_assert_int_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(test_sscanf_spec_i_int3) {
+    long long a1 = 0, a2 = 0, c1 = 0, c2 = 0;
+    char b1 = 0, b2 = 0, d1 = 0, d2 = 0;
+    const char str[] = "100500-600+700+400";
+    const char fstr[] = "%lli%c%lli%c";
+
+    int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+    int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+    ck_assert_int_eq(res1, res2);
+    ck_assert_int_eq(a1, a2);
+    ck_assert_int_eq(b1, b2);
+    ck_assert_int_eq(c1, c2);
+    ck_assert_int_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(test_sscanf_oct) {
+        long long a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+        const char str[] = "  055555 0f 0f 0f5555555 0ddd   4    3    1 ";
+        const char fstr[] = "%llo %lld %lld %lli";
+
+        int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+        int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+        ck_assert_int_eq(res1, res2);
+        ck_assert_int_eq(a1, a2);
+        ck_assert_int_eq(b1, b2);
+        ck_assert_int_eq(c1, c2);
+        ck_assert_int_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(test_sscanf_hex) {
+    long long a1 = 0, a2 = 0, b1 = 0, b2 = 0, c1 = 0, c2 = 0, d1 = 0, d2 = 0;
+    const char str[] = " 63DD 0xf 0xf 0xf5555555 ddd   4    3    1 ";
+    const char fstr[] = "%lli %lld %lld %lli";
+
+    int16_t res1 = s21_sscanf(str, fstr, &a1, &b1, &c1, &d1);
+    int16_t res2 = sscanf(str, fstr, &a2, &b2, &c2, &d2);
+
+    ck_assert_int_eq(res1, res2);
+    ck_assert_int_eq(a1, a2);
+    ck_assert_int_eq(b1, b2);
+    ck_assert_int_eq(c1, c2);
+    ck_assert_int_eq(d1, d2);
+}
+END_TEST
+
+START_TEST(test_strtold_exp)
+{
+  char *string;
+  char *stopstring;
+  long double z;
+  string = "eee3.14159This stopped it";
+  z = s21_strtold(string, &stopstring);
+  //ck_assert_ldouble_eq(z, 3.14159);
+}
+END_TEST
+
+START_TEST(test_s21_isdigit_valid)
+{
+    ck_assert_int_eq(s21_isdigit('5'), 1);
+    ck_assert_int_eq(s21_isdigit('9'), 1);
+    ck_assert_int_eq(s21_isdigit('0'), 1);
+}
+END_TEST
+
+START_TEST(test_s21_isdigit_invalid)
+{
+    ck_assert_int_eq(s21_isdigit('a'), 0);
+    ck_assert_int_eq(s21_isdigit('Z'), 0);
+    ck_assert_int_eq(s21_isdigit(' '), 0);
+    ck_assert_int_eq(s21_isdigit('.'), 0);
+}
+END_TEST
+
+START_TEST(test_s21_strntollu_valid)
+{
+    char *endptr;
+    ck_assert_uint_eq(s21_strntollu("0x1a", &endptr, 16, 2), 26);
+    ck_assert_uint_eq(s21_strntollu("0x1f", &endptr, 16, 2), 31);
+    ck_assert_uint_eq(s21_strntollu("0x10", &endptr, 16, 3), 16);
+}
+END_TEST
+
 Suite *s21_sprintf_suite(void) {
   Suite *s;
   TCase *tc_a;
@@ -3197,9 +3315,18 @@ Suite *s21_sprintf_suite(void) {
   tcase_add_test(tc_a, test_sscanf_mixed_type);
   tcase_add_test(tc_a, test_sscanf_width_specifier);
   tcase_add_test(tc_a, test_sscanf_n_assignment);
+  tcase_add_test(tc_a, test_sscanf_spec_i_int1);
+  tcase_add_test(tc_a, test_sscanf_spec_i_int2);
+  tcase_add_test(tc_a, test_sscanf_spec_i_int3);
+  tcase_add_test(tc_a, test_sscanf_oct);
+  tcase_add_test(tc_a, test_sscanf_hex);
   tcase_add_test(tc_a, s21_sscanf_test_17_o_option);
   tcase_add_test(tc_a, s21_sscanf_test_18_o_option);
   tcase_add_test(tc_a, s21_sscanf_test_19_u_option);
+  tcase_add_test(tc_a, test_strtold_exp);
+  tcase_add_test(tc_a, test_s21_isdigit_valid);
+  tcase_add_test(tc_a, test_s21_isdigit_invalid);
+  tcase_add_test(tc_a, test_s21_strntollu_valid);
 
   // Добавляем кейсы в сьют
   suite_add_tcase(s, tc_a);

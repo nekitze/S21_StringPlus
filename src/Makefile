@@ -12,7 +12,7 @@ endif
 
 TEST_COMPILE = $(CC) $(TEST_FLAGS) tests/*.c libs21_string.a $(CHECK_FLAGS) -L. -ls21_string
 
-all: clean s21_string.a test
+all: clean s21_string.a
 
 clean:
 	rm -rf *.o *.g* *.info *.out report *.a *.dSYM debug
@@ -29,7 +29,7 @@ debug: clean s21_string.a
 
 gcov_report: s21_string.a test
 	rm -f *.g*
-	$(CC) $(TEST_FLAGS) s21*.c tests/*.c libs21_string.a $(CHECK_FLAGS) $(GCOVFLAGS)
+	$(CC) $(TEST_FLAGS) s21_a*.c s21_m*.c s21_s*.c tests/*.c libs21_string.a $(CHECK_FLAGS) $(GCOVFLAGS)
 	./a.out
 	lcov -t a.out -o rep.info -c -d .
 	genhtml -o report rep.info

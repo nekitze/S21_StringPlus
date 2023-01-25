@@ -86,7 +86,6 @@ s21_size_t s21_strcspn(const char *str1, const char *str2);
 char *s21_strncpy(char *dest, const char *src, s21_size_t n);
 char *s21_wstrncat(char *dest, const wchar_t *src, s21_size_t n);
 char *s21_strrchr(const char *str, int c);
-int del_check(char c, const char *delim);
 char *s21_strerror(int errnum);
 char *s21_itoa(long int num, char *str);
 int s21_strncmp(const char *str1, const char *str2, s21_size_t n);
